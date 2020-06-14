@@ -48,8 +48,25 @@ namespace Shop.Controllers
 
             return products;
         }
-    }
 
+        [HttpPost]
+        [Route("")]
+        public async Task<ActionResult<Product>> Post(
+            [FromServices] DataContext context,
+            [FromBody] Product p
+        )
+        {
+            if (ModelState.IsValid){
+
+                context.Products.Add(p);
+                await context.SaveChangesAsync();
+                return Ok(p);
+            }
+            else {
+                return BadRequest(ModelState);
+            }
+        }
+    }
 }
 
 

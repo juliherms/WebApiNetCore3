@@ -14,6 +14,7 @@ $ dotnet add package Microsoft.EntityFrameworkCore.InMemory
 ### Para executar a API
 ```bash
 $ dotnet run
+$ dotnwt watch run
 ```
 
 
