@@ -33,7 +33,8 @@ public class CategoryController : ControllerBase {
     [Route("")]
     public async Task<ActionResult<Category>> Post(
         [FromBody] Category c,
-        [FromServices] DataContext context)
+        [FromServices] DataContext context
+    )
     {
         //faz a validacao da categoria
         if (!ModelState.IsValid)
@@ -57,7 +58,8 @@ public class CategoryController : ControllerBase {
     public async Task<ActionResult<Category>> Put(
         int id,
         [FromBody] Category c,
-        [FromServices] DataContext context)
+        [FromServices] DataContext context
+    )
     {
         //Verifica se o ID informado é o mesmo do Body
         if(id != c.Id)
@@ -81,10 +83,27 @@ public class CategoryController : ControllerBase {
     }
 
     [HttpDelete]
-    [Route("")]
-    public async Task<ActionResult<Category>> Delete()
+    [Route("{id:int}")]
+    public async Task<ActionResult<Category>> Delete(
+        int id,
+        [FromServices] DataContext context
+    )
     {
-        return Ok();
+        //recupera a nossa categoria do banco de dados(pesquisa pelo id)
+        var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+        if(category == null)
+            return NotFound(new { message = "Categoria não encontrada" });
+
+        try
+        {
+            context.Categories.Remove(category);
+            await context.SaveChangesAsync();
+            return Ok(new { message = "Categoria removida com sucesso" });
+            
+        } catch (Exception) {
+            return BadRequest(new { message = "Não foi possível remover a categoria"});
+        }
+        
     }
 
 
