@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shop.Data;
 using Shop.Models;
 
@@ -37,15 +39,25 @@ public class CategoryController : ControllerBase {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         
-        context.Categories.Add(c);
-        await context.SaveChangesAsync();
+        try{
+
+            context.Categories.Add(c);
+            await context.SaveChangesAsync();
+            return Ok(c);
+
+        } catch 
+        {
+            return BadRequest(new { message = "Não foi possível criar a categoria" });
+        }
         
-        return Ok(c);
     }
 
     [HttpPut]
     [Route("{id:int}")]
-    public async Task<ActionResult<Category>> Put(int id, [FromBody] Category c)
+    public async Task<ActionResult<Category>> Put(
+        int id,
+        [FromBody] Category c,
+        [FromServices] DataContext context)
     {
         //Verifica se o ID informado é o mesmo do Body
         if(id != c.Id)
@@ -55,7 +67,17 @@ public class CategoryController : ControllerBase {
         if(!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        return Ok(c);
+        try{
+            //faz a atualizacao otimizada - ele verifica propriedade por propriedade
+            context.Entry<Category>(c).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return Ok(c);
+            
+        } catch(DbUpdateConcurrencyException) {
+            return BadRequest(new { message = "Este registro já foi atualizado por outro processo"});
+        } catch(Exception) {
+            return BadRequest(new { message = "Não foi possível atualizar a categoria"});
+        }
     }
 
     [HttpDelete]
