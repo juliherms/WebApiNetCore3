@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Shop.Models;
 
 //Representa o controller de categoria
 //https://localhost:5001/categories
@@ -23,16 +24,20 @@ public class CategoryController : ControllerBase {
 
     [HttpPost]
     [Route("")]
-    public string Post()
+    public Category Post([FromBody] Category c)
     {
-        return "POST";
+        //realiza o parser via ModelBinder do JSON para o Objeto
+        return c;
     }
 
     [HttpPut]
-    [Route("")]
-    public string Put()
+    [Route("{id:int}")]
+    public Category Put(int id, [FromBody] Category c)
     {
-        return "PUT";
+        if(c.Id == id)
+        return c;
+
+        return null;
     }
 
     [HttpDelete]
