@@ -16,17 +16,24 @@ public class CategoryController : ControllerBase {
 
     [HttpGet]
     [Route("")]
-    public async Task<ActionResult<List<Category>>> Get()
+    public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context )
     {
-        return new List<Category>();
+        //retorna a lista de categorias
+        var cetegories = await context.Categories.AsNoTracking().ToListAsync();
+        return Ok(cetegories);
     }
 
     //exemplo de consulta por id com restrição
     [HttpGet]
     [Route("{id:int}")]
-    public async Task<ActionResult<Category>> GetById(int id)
+    public async Task<ActionResult<Category>> GetById
+    (
+        int id,
+        [FromServices] DataContext context
+    )
     {
-        return new Category();
+        var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return Ok(category);
     }
 
     [HttpPost]
@@ -99,12 +106,9 @@ public class CategoryController : ControllerBase {
             context.Categories.Remove(category);
             await context.SaveChangesAsync();
             return Ok(new { message = "Categoria removida com sucesso" });
-            
+
         } catch (Exception) {
             return BadRequest(new { message = "Não foi possível remover a categoria"});
         }
-        
     }
-
-
 }
