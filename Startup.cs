@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Shop.Data;
 
 namespace Shop
 {
@@ -20,7 +22,9 @@ namespace Shop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(); //habilita os controllers
-
+            services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("Database")); //adiciona minha database em memória
+            services.AddScoped<DataContext, DataContext>(); //add dependencia e garante que só tenho 1 por conexao
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
