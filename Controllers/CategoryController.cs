@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Shop.Data;
 using Shop.Models;
 
 //Representa o controller de categoria
@@ -28,11 +29,16 @@ public class CategoryController : ControllerBase {
 
     [HttpPost]
     [Route("")]
-    public async Task<ActionResult<Category>> Post([FromBody] Category c)
+    public async Task<ActionResult<Category>> Post(
+        [FromBody] Category c,
+        [FromServices] DataContext context)
     {
         //faz a validacao da categoria
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+        
+        context.Categories.Add(c);
+        await context.SaveChangesAsync();
         
         return Ok(c);
     }
