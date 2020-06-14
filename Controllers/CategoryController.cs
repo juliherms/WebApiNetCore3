@@ -30,6 +30,10 @@ public class CategoryController : ControllerBase {
     [Route("")]
     public async Task<ActionResult<Category>> Post([FromBody] Category c)
     {
+        //faz a validacao da categoria
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
         return Ok(c);
     }
 
@@ -37,10 +41,15 @@ public class CategoryController : ControllerBase {
     [Route("{id:int}")]
     public async Task<ActionResult<Category>> Put(int id, [FromBody] Category c)
     {
-        if(c.Id == id)
-        return Ok(c);
+        //Verifica se o ID informado é o mesmo do Body
+        if(id != c.Id)
+            return NotFound(new { message = "Categoria não encontrada"});
 
-        return NotFound();
+        //Verifica se o Body é válido
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        return Ok(c);
     }
 
     [HttpDelete]
