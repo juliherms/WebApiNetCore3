@@ -8,7 +8,7 @@ namespace Shop.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-
+            
         }
 
         //abaixo sao informadas minhas entidades
