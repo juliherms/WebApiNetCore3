@@ -22,8 +22,8 @@ namespace Shop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(); //habilita os controllers
-            services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("Database")); //adiciona minha database em memória
-            //services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString"))); //uso do sql server.
+            //services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("Database")); //adiciona minha database em memória
+            services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString"))); //uso do sql server.
             services.AddScoped<DataContext, DataContext>(); //add dependencia e garante que só tenho 1 por conexao
             
         }
